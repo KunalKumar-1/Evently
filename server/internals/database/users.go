@@ -6,7 +6,7 @@ type UserModel struct {
 	Db *sql.DB
 }
 
-type user struct {
+type User struct {
 	Id       int    `json:"id"`
 	Name     string `json:"name"`
 	Email    string `json:"email"`

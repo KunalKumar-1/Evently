@@ -6,7 +6,7 @@ type AttendeeModel struct {
 	Db *sql.DB
 }
 
-type attendee struct {
+type Attendee struct {
 	Id      int `json:"id"`
 	EventId int `json:"eventid"`
 	UserId  int `json:"userid"`

@@ -9,7 +9,7 @@ type EventModel struct {
 	Db *sql.DB
 }
 
-type event struct {
+type Event struct {
 	Id          int       `json:"id"`
 	OwnerId     int       `json:"ownerId" binding:"required"`
 	Name        string    `json:"name" binding:"required, min=3, max=50"`
