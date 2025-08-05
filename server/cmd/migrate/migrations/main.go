@@ -52,7 +52,8 @@ func main() {
 		if err := m.Down(); err != nil && err != migrate.ErrNoChange {
 			log.Fatal(err)
 		}
-	default: log.Fatal("provide a migration 'up' or 'down' ")
+	default:
+		log.Fatal("provide a migration 'up' or 'down' ")
 	}
 
 }

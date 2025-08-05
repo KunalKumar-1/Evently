@@ -1,4 +1,4 @@
-name: Go CI
+name: Go build ci
 
 on:
   push:
@@ -9,6 +9,8 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    env:
+      CGO_ENABLED: 1
 
     steps:
       - name: Checkout code
@@ -17,12 +19,14 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.24.5'
+          go-version: '1.22'
 
       - name: Install dependencies
+        working-directory: ./server
         run: go mod download
 
       - name: Run gofmt
+        working-directory: ./server
         run: |
           fmt_output=$(gofmt -l .)
           if [ -n "$fmt_output" ]; then
@@ -32,8 +36,13 @@ jobs:
           fi
 
       - name: Run go vet
+        working-directory: ./server
         run: go vet ./...
 
-      - name: Build
-        run: go build ./...
-        
+      - name: Build API
+        working-directory: ./server
+        run: go build -tags sqlite ./cmd/api
+
+      - name: Build Migrations
+        working-directory: ./server
+        run: go build -tags sqlite ./cmd/migrate/migrations
