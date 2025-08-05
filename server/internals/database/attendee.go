@@ -7,7 +7,7 @@ type AttendeeModel struct {
 }
 
 type attendee struct {
-	Id int `json:"id"`
+	Id      int `json:"id"`
 	EventId int `json:"eventid"`
-	UserId int `json:"userid"`
+	UserId  int `json:"userid"`
 }
