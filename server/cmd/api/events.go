@@ -20,7 +20,7 @@ func (app *application) createEvent(c *gin.Context) {
 		return
 	}
 
-	err := app.models.Events.insert(event)
+	err := app.models.Events.Insert(&event)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to create event",
@@ -53,14 +53,14 @@ func (app *application) getEvent(c *gin.Context) {
 	}
 
 	event, err := app.models.Events.Get(id)
-	if err == nil {
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Event not found",
 		})
 		return
 	}
 
-	if err != nil {
+	if event == nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to retireve event",
 		})
