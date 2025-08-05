@@ -17,7 +17,7 @@ func main() {
 
 	direction := os.Args[1] // up or down
 
-	db, err := sql.Open("sqlite3", "./data.db")
+	db, err := sql.Open("sqlite3", "./data.db") // TODO: change to production db
 
 	if err != nil {
 		log.Fatal(err)
