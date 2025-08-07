@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -14,14 +15,18 @@ func (app *application) createEvent(c *gin.Context) {
 	var event database.Event
 
 	if err := c.ShouldBindJSON(&event); err != nil {
+		fmt.Println("Bind error:", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
 
+	// Insert into db
 	err := app.models.Events.Insert(&event)
+
 	if err != nil {
+		fmt.Println("DB insert error:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to create event",
 		})
@@ -82,7 +87,7 @@ func (app *application) updateEvent(c *gin.Context) {
 	existingEvent, err := app.models.Events.Get(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to retireve event",
+			"error": "Failed to retireve event " + err.Error(),
 		})
 		return
 	}
@@ -96,10 +101,11 @@ func (app *application) updateEvent(c *gin.Context) {
 
 	updatedEvent := &database.Event{}
 
-	if err := c.ShouldBind(updatedEvent); err != nil {
+	if err := c.ShouldBindJSON(updatedEvent); err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	updatedEvent.Id = id
@@ -110,6 +116,9 @@ func (app *application) updateEvent(c *gin.Context) {
 		})
 		return
 	}
+
+	// Return the updated event
+	c.JSON(http.StatusOK, updatedEvent)
 }
 
 func (app *application) deleteEvent(c *gin.Context) {
