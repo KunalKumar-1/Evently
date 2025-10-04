@@ -20,6 +20,7 @@ type Event struct {
 	Location    string `json:"location" binding:"required,min=3"`
 }
 
+// Insert a new event into the database
 func (e *EventModel) Insert(event *Event) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 	defer cancel()
@@ -34,6 +35,7 @@ func (e *EventModel) Insert(event *Event) error {
 	return e.Db.QueryRowContext(ctx, query, event.OwnerId, event.Name, event.Description, parsedDate, event.Location).Scan(&event.Id)
 }
 
+// GetAll retrieves all events from the database
 func (e *EventModel) GetAll() ([]*Event, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 	defer cancel()
@@ -64,7 +66,7 @@ func (e *EventModel) GetAll() ([]*Event, error) {
 
 	return events, nil
 }
-
+// Get retrieves a specific event by its ID
 func (e *EventModel) Get(id int) (*Event, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 	defer cancel()
@@ -81,7 +83,7 @@ func (e *EventModel) Get(id int) (*Event, error) {
 	}
 	return &event, nil
 }
-
+// Update modifies an existing event in the database
 func (e *EventModel) Update(event *Event) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 	defer cancel()
@@ -99,7 +101,7 @@ func (e *EventModel) Update(event *Event) error {
 
 	return nil
 }
-
+// Delete removes an event from the database by its ID
 func (e *EventModel) Delete(id int) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 	defer cancel()
