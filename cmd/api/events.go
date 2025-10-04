@@ -36,7 +36,7 @@ func (app *application) createEvent(c *gin.Context) {
 	c.JSON(http.StatusCreated, event)
 }
 
-//get all events
+// get all events
 func (app *application) getAllEvent(c *gin.Context) {
 	events, err := app.models.Events.GetAll()
 	if err != nil {
@@ -86,7 +86,7 @@ func (app *application) updateEvent(c *gin.Context) {
 	}
 
 	existingEvent, err := app.models.Events.Get(id)
-	
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to retireve event " + err.Error(),
