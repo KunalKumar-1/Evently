@@ -36,13 +36,13 @@ jobs:
           fi
 
       - name: Run go vet
-        working-directory: ./server
+        working-directory: ./
         run: go vet ./...
 
       - name: Build API
-        working-directory: ./server
+        working-directory: ./
         run: go build -tags sqlite ./cmd/api
 
       - name: Build Migrations
-        working-directory: ./server
+        working-directory: ./
         run: go build -tags sqlite ./cmd/migrate/migrations
