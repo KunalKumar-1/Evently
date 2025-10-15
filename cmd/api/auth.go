@@ -38,7 +38,7 @@ func (app *application) registerUser(c *gin.Context) {
 		Password: register.Password,
 		Name:     register.Name,
 	}
-
+	//checking
 	err = app.models.Users.Insert(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
