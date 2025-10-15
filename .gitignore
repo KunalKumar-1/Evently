@@ -1,1 +1,8 @@
 .env
+*.tmp
+tmp/
+*.log
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
