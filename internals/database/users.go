@@ -26,3 +26,19 @@ func (u *UserModel) Insert(user *User) error {
 	return u.Db.QueryRowContext(ctx, query, user.Name, user.Email, user.Password).Scan(&user.Id)
 
 }
+
+func (u *UserModel) Get(id int) (*User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `SELECT * FROM users WHERE id = $1`
+	var user User
+	err := u.Db.QueryRowContext(ctx, query, id).Scan(&user.Id, &user.Name, &user.Email, &user.Password)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &user, nil
+}
