@@ -11,19 +11,17 @@ A Go-based event management API built with Gin, SQLite, and JWT authentication.
 ## Getting Started
 
 ### 1. Install Dependencies
-
 ```bash
-# Install Go dependencies
-go mod download
+# Using Makefile (recommended)
+make install
 
-# Install Air (optional but recommended for development)
-go install github.com/cosmtrek/air@latest
+# Or manually
+go mod download
 ```
 
 ### 2. Environment Setup
 
 Create a `.env` file in the root directory:
-
 ```env
 PORT=8080
 JWT_SECRET=your-secret-key-here
@@ -31,29 +29,76 @@ DATABASE_URL=./data.db
 ```
 
 ### 3. Run Database Migrations
-
 ```bash
+# Using Makefile
+make migrate-up
+
+# Or manually
 go run cmd/migrate/main.go up
 ```
 
 ### 4. Run the Application
 
 **Option A: Using Air (Recommended for Development)**
-
 ```bash
+# Using Makefile
+make dev
+
+# Or manually
 air
 ```
 
 **Option B: Using Go directly**
-
 ```bash
+# Using Makefile
+make run
+
+# Or manually
 go run cmd/api/main.go
 ```
 
 The API will be available at `http://localhost:8080`
 
-## Project Structure
+## Makefile Commands
 
+The project includes a Makefile for common tasks. Run `make help` to see all available commands:
+
+| Command | Description |
+|---------|-------------|
+| `make help` | Show all available commands |
+| `make install` | Install Go dependencies |
+| `make deps` | Alias for install |
+| `make migrate-up` | Run database migrations |
+| `make migrate-down` | Rollback database migrations |
+| `make dev` | Start development server with Air |
+| `make run` | Run the application |
+| `make build` | Build the application binary |
+| `make clean` | Clean build artifacts and temp files |
+| `make test` | Run tests |
+
+### Examples
+```bash
+# See all available commands
+make help
+
+# Install dependencies and run migrations
+make install
+make migrate-up
+
+# Start development server
+make dev
+
+# Build production binary
+make build
+
+# Run tests
+make test
+
+# Clean up
+make clean
+```
+
+## Project Structure
 ```
 .
 ├── cmd/
@@ -63,10 +108,10 @@ The API will be available at `http://localhost:8080`
 │   ├── database/      # Database models and queries
 │   └── env/           # Environment configuration
 ├── server/            # Server configurations
+├── Makefile           # Build automation
 ├── data.db            # SQLite database
 ├── .air.toml          # Air configuration
 └── go.mod             # Go modules
-
 ```
 
 ## API Endpoints
@@ -77,6 +122,17 @@ The API will be available at `http://localhost:8080`
 ## Development
 
 The project uses Air for live reload during development. Any changes to `.go` files will automatically rebuild and restart the server.
+
+Use `make dev` to start the development server with live reload enabled.
+
+## Building for Production
+```bash
+# Build the binary
+make build
+
+# The binary will be created at bin/api
+./bin/api
+```
 
 ## License
 
