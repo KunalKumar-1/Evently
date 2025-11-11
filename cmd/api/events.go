@@ -228,14 +228,16 @@ func (app *application) getAttendeesForEvent(c *gin.Context) {
 		})
 		return
 	}
-	users, err := app.models.Attendees.GetAttendeeByEvent(id)
+
+	events, err := app.models.Attendees.GetAttendeeByEvent(id) //get attendees for event
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "failed to retrieve Attendees for events",
 		})
 		return
 	}
-	c.JSON(http.StatusOK, users)
+
+	c.JSON(http.StatusOK, events)
 }
 
 func (app *application) deleteAttendeeFromEvent(c *gin.Context) {
