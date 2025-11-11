@@ -5,10 +5,26 @@ import (
 	"log"
 
 	_ "github.com/joho/godotenv/autoload"
+	_ "github.com/kunalkumar-1/Evently/docs"
 	"github.com/kunalkumar-1/Evently/internals/database"
 	"github.com/kunalkumar-1/Evently/internals/env"
 	_ "github.com/mattn/go-sqlite3"
 )
+
+// @title           Evently API
+// @version         1.0
+// @description     Event Management REST API built with Go and Gin.
+
+// @contact.name   API Support
+// @contact.url    https://github.com/kunalkumar-1/Evently
+// @contact.email  kunaldevspro@gmail.com
+
+// @license.name  MIT
+// @license.url   https://opensource.org/licenses/MIT
+
+// @host      localhost:8080
+// @BasePath  /api/v1
+// @schemes   http
 
 type application struct {
 	port      int
