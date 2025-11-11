@@ -1,0 +1,269 @@
+basePath: /api/v1
+definitions:
+  database.Attendee:
+    properties:
+      eventid:
+        type: integer
+      id:
+        type: integer
+      userid:
+        type: integer
+    type: object
+  database.Event:
+    properties:
+      date:
+        type: string
+      description:
+        maxLength: 500
+        minLength: 3
+        type: string
+      id:
+        type: integer
+      location:
+        minLength: 3
+        type: string
+      name:
+        maxLength: 50
+        minLength: 3
+        type: string
+      ownerId:
+        type: integer
+    required:
+    - date
+    - description
+    - location
+    - name
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+    url: https://github.com/kunalkumar-1/Evently
+  description: Event Management REST API built with Go and Gin.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Evently API
+  version: "1.0"
+paths:
+  /events:
+    post:
+      consumes:
+      - application/json
+      description: Create a new event owned by the authenticated user
+      parameters:
+      - description: Event Data
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/database.Event'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/database.Event'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new event
+      tags:
+      - Events
+  /events/{id}:
+    delete:
+      description: Delete an event by ID (only by owner)
+      parameters:
+      - description: Event ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete event
+      tags:
+      - Events
+    get:
+      consumes:
+      - application/json
+      description: Retrieve details of a specific event
+      parameters:
+      - description: Event ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Event'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get event by ID
+      tags:
+      - Events
+    put:
+      consumes:
+      - application/json
+      description: Update an existing event by ID (only by owner)
+      parameters:
+      - description: Event ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated Event Data
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/database.Event'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Event'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update event
+      tags:
+      - Events
+  /events/{id}/attendees:
+    get:
+      description: Get a list of all attendees for a specific event
+      parameters:
+      - description: Event ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Attendee'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get attendees for event
+      tags:
+      - Attendees
+  /events/{id}/attendees/{userId}:
+    post:
+      description: Adds a user as an attendee to a specific event
+      parameters:
+      - description: Event ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/database.Attendee'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Add attendee to event
+      tags:
+      - Attendees
+schemes:
+- http
+swagger: "2.0"

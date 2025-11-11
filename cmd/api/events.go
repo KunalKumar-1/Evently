@@ -9,7 +9,18 @@ import (
 	"github.com/kunalkumar-1/Evently/internals/database"
 )
 
-// create event handler
+// CreateEvent creates a new event
+// @Summary      Create a new event
+// @Description  Create a new event owned by the authenticated user
+// @Tags         Events
+// @Accept       json
+// @Produce      json
+// @Param        event  body      database.Event  true  "Event Data"
+// @Success      201    {object}  database.Event
+// @Failure      400    {object}  map[string]string
+// @Failure      500    {object}  map[string]string
+// @Router       /events [post]
+// @Security     BearerAuth
 func (app *application) createEvent(c *gin.Context) {
 
 	var event database.Event
@@ -39,7 +50,16 @@ func (app *application) createEvent(c *gin.Context) {
 	c.JSON(http.StatusCreated, event)
 }
 
-// get all events
+// GetAllEvent returns all events
+// @Summary      Get all events
+// @Description  Retrieve a list of all available events
+// @Tags         Events
+// @Accept       json
+// @Produce      json
+// @Success      200  {array}  database.Event
+// @Failure      500  {object}  map[string]string  "Failed to retrieve events"
+// @Router       /events [get]
+
 func (app *application) getAllEvent(c *gin.Context) {
 	events, err := app.models.Events.GetAll()
 	if err != nil {
@@ -51,7 +71,17 @@ func (app *application) getAllEvent(c *gin.Context) {
 	c.JSON(http.StatusOK, events)
 }
 
-// get events
+// GetEvent retrieves an event by ID
+// @Summary      Get event by ID
+// @Description  Retrieve details of a specific event
+// @Tags         Events
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "Event ID"
+// @Success      200  {object}  database.Event
+// @Failure      400  {object}  map[string]string
+// @Failure      404  {object}  map[string]string
+// @Router       /events/{id} [get]
 func (app *application) getEvent(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -78,7 +108,20 @@ func (app *application) getEvent(c *gin.Context) {
 	c.JSON(http.StatusCreated, event)
 }
 
-// update event
+// UpdateEvent updates an existing event
+// @Summary      Update event
+// @Description  Update an existing event by ID (only by owner)
+// @Tags         Events
+// @Accept       json
+// @Produce      json
+// @Param        id     path      int             true  "Event ID"
+// @Param        event  body      database.Event  true  "Updated Event Data"
+// @Success      200    {object}  database.Event
+// @Failure      400    {object}  map[string]string
+// @Failure      403    {object}  map[string]string
+// @Failure      500    {object}  map[string]string
+// @Router       /events/{id} [put]
+// @Security     BearerAuth
 func (app *application) updateEvent(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id")) // get event id from url
 	if err != nil {
@@ -137,7 +180,17 @@ func (app *application) updateEvent(c *gin.Context) {
 	c.JSON(http.StatusOK, updatedEvent)
 }
 
-// delete event
+// DeleteEvent deletes an event by ID
+// @Summary      Delete event
+// @Description  Delete an event by ID (only by owner)
+// @Tags         Events
+// @Param        id   path      int  true  "Event ID"
+// @Success      204  {object}  nil
+// @Failure      400  {object}  map[string]string
+// @Failure      403  {object}  map[string]string
+// @Failure      404  {object}  map[string]string
+// @Router       /events/{id} [delete]
+// @Security     BearerAuth
 func (app *application) deleteEvent(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -178,6 +231,18 @@ func (app *application) deleteEvent(c *gin.Context) {
 
 }
 
+// AddAttendeeToEvent adds a user to an event
+// @Summary      Add attendee to event
+// @Description  Adds a user as an attendee to a specific event
+// @Tags         Attendees
+// @Param        id      path      int  true  "Event ID"
+// @Param        userId  path      int  true  "User ID"
+// @Success      201     {object}  database.Attendee
+// @Failure      400     {object}  map[string]string
+// @Failure      403     {object}  map[string]string
+// @Failure      404     {object}  map[string]string
+// @Router       /events/{id}/attendees/{userId} [post]
+// @Security     BearerAuth
 func (app *application) addAttendeeToEvent(c *gin.Context) {
 	eventId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -262,6 +327,14 @@ func (app *application) addAttendeeToEvent(c *gin.Context) {
 	c.JSON(http.StatusCreated, attendee)
 }
 
+// GetAttendeesForEvent retrieves attendees for a given event
+// @Summary      Get attendees for event
+// @Description  Get a list of all attendees for a specific event
+// @Tags         Attendees
+// @Param        id   path      int  true  "Event ID"
+// @Success      200  {array}  database.Attendee
+// @Failure      400  {object}  map[string]string
+// @Router       /events/{id}/attendees [get]
 func (app *application) getAttendeesForEvent(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
