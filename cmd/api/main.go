@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"log"
 
-	_ "github.com/kunalkumar-1/Evently/docs"
 	_ "github.com/joho/godotenv/autoload"
+	_ "github.com/kunalkumar-1/Evently/docs"
 	"github.com/kunalkumar-1/Evently/internals/database"
 	"github.com/kunalkumar-1/Evently/internals/env"
 	_ "github.com/mattn/go-sqlite3"
