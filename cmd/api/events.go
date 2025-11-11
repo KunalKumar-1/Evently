@@ -22,6 +22,9 @@ func (app *application) createEvent(c *gin.Context) {
 		return
 	}
 
+	user := app.GetUserFromContext(c)
+	event.OwnerId = user.Id
+
 	// Insert into db
 	err := app.models.Events.Insert(&event)
 
@@ -85,6 +88,7 @@ func (app *application) updateEvent(c *gin.Context) {
 		return
 	}
 
+	user := app.GetUserFromContext(c) // get user from context
 	existingEvent, err := app.models.Events.Get(id)
 
 	if err != nil {
@@ -101,10 +105,17 @@ func (app *application) updateEvent(c *gin.Context) {
 		return
 	}
 
+	if existingEvent.OwnerId != user.Id {
+		c.JSON(http.StatusForbidden, gin.H{
+			"erorr": "You are not authorized to update this event",
+		})
+		return
+	}
+
 	updatedEvent := &database.Event{}
 
 	fmt.Println("Existing Event:", existingEvent)
-	fmt.Println("upadtedEvent:", updatedEvent)
+	fmt.Println("UpadtedEvent:", updatedEvent)
 
 	if err := c.ShouldBindJSON(updatedEvent); err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
@@ -136,6 +147,27 @@ func (app *application) deleteEvent(c *gin.Context) {
 		return
 	}
 
+	user := app.GetUserFromContext(c) // get user from context
+	existingEvent, err := app.models.Events.Get(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to retireve event",
+		})
+	}
+	if existingEvent == nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"erorr": "Event not found",
+		})
+		return
+	}
+
+	if existingEvent.OwnerId != user.Id {
+		c.JSON(http.StatusForbidden, gin.H{
+			"erorr": "You are not authorized to delete this event",
+		})
+		return
+	}
+
 	if err := app.models.Events.Delete(id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to delete event",
@@ -143,6 +175,7 @@ func (app *application) deleteEvent(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusNoContent, nil)
+
 }
 
 func (app *application) addAttendeeToEvent(c *gin.Context) {
@@ -186,6 +219,15 @@ func (app *application) addAttendeeToEvent(c *gin.Context) {
 	if userToAdd == nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": "User not found",
+		})
+		return
+	}
+
+	user := app.GetUserFromContext(c)
+
+	if event.OwnerId != user.Id {
+		c.JSON(http.StatusForbidden, gin.H{
+			"erorr": "You are not authorized to add attendees to this event",
 		})
 		return
 	}
@@ -253,6 +295,28 @@ func (app *application) deleteAttendeeFromEvent(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid userId Id",
 		})
+	}
+
+	event, err := app.models.Events.Get(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to retireve event",
+		})
+		return
+	}
+	if event == nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"erorr": "Event not found",
+		})
+		return
+	}
+
+	user := app.GetUserFromContext(c)
+	if event.OwnerId != user.Id {
+		c.JSON(http.StatusForbidden, gin.H{
+			"error": "You are not authorized to delete attendees from this event",
+		})
+		return
 	}
 
 	err = app.models.Attendees.Delete(userId, id)
