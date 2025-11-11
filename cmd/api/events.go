@@ -24,7 +24,6 @@ func (app *application) createEvent(c *gin.Context) {
 
 	user := app.GetUserFromContext(c)
 	event.OwnerId = user.Id
-	
 
 	// Insert into db
 	err := app.models.Events.Insert(&event)
@@ -112,7 +111,7 @@ func (app *application) updateEvent(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	updatedEvent := &database.Event{}
 
 	fmt.Println("Existing Event:", existingEvent)
@@ -153,8 +152,8 @@ func (app *application) deleteEvent(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to retireve event",
-	})
-}
+		})
+	}
 	if existingEvent == nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"erorr": "Event not found",
@@ -176,7 +175,7 @@ func (app *application) deleteEvent(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusNoContent, nil)
- 
+
 }
 
 func (app *application) addAttendeeToEvent(c *gin.Context) {

@@ -5,7 +5,7 @@ import (
 	"github.com/kunalkumar-1/Evently/internals/database"
 )
 
-func(app *application) GetUserFromContext(c *gin.Context) *database.User {
+func (app *application) GetUserFromContext(c *gin.Context) *database.User {
 	contextUser, exist := c.Get("user")
 	if !exist {
 		return &database.User{}
